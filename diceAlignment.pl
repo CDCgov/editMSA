@@ -82,7 +82,7 @@ if ( scalar(@ARGV) != 1 ) {
 	$message .= "\t\t-B|--begin <INT>\tBegin coordinate.\n";
 	$message .= "\t\t-E|--end <INT>\t\tEnd coordinate.\n";
 	$message .= "\t\t-R|--shift-right\tShift alignment right.\n";
-	$message .= "\t\t-T|--translate\tTranslate data as well.\n";
+	$message .= "\t\t-T|--translate\t\tTranslate data as well.\n";
 	$message .= "\t\t-C|--sort-by-count\tSort data by their cluster counts.\n";
 	die($message."\n");
 }
@@ -111,7 +111,6 @@ if ( !defined($end) ) {
 
 if ( !defined($prefix) ) {
 	$filename = basename($ARGV[0]);
-	print STDERR $filename,"\n";
 	@pieces = split('\.',$filename);
 	if ( scalar(@pieces) > 1 ) {
 		pop(@pieces);
@@ -210,7 +209,7 @@ for $i (0..$#order) {
 }
 close(MINI);
 close(DICED);
-
+print STDERR "Created '$prefix.miniNT.fasta' for editing.\n";
 
 if ( $translate ) {
 	open(AA,'>',$prefix.'.miniAA.fasta') or die("Cannot write to $prefix.miniAA.fasta\n");
@@ -260,6 +259,7 @@ if ( $translate ) {
 		print AA '>',join('-',@{$ntClusterList{$pat}}),'|',$aaClusterCount{$pat},"\n",$fill,"\n";
 	}
 	close(AA);
+	print STDERR "Created '$prefix.miniAA.fasta' for editing.\n";
 }
 
 sub translate($) {
