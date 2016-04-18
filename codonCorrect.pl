@@ -6,11 +6,13 @@
 use Getopt::Long;
 GetOptions(
 		'insertion-table|I=s' => \$insertionTable,
+		'output-table|O=s' => \$outputTable
 	);
 
 if ( -t STDIN && scalar(@ARGV) != 1 ) {
 	$message = "Usage:\n\tperl $0 <nts.fasta> [options]\n";
 	$message .= "\t\t--insertion-table|-I <STR>\tInsertion table for insertion corrections.\n";
+	$message .= "\t\t--output-table|-O <STR>\tOutput file for the insertion table.\n";
 	die($message."\n");
 }
 
@@ -24,6 +26,12 @@ if ( $insertionTable ) {
 		$inserts{$id}{$pos} = lc($insert);
 	}
 	close(INS);
+}
+
+if ( $outputTable ) {
+	open(TABL,'>',$outputTable) or die("Cannot open $outputTable for writing.\n");
+} else {
+	*TABL = *STDERR;
 }
 
 # Process records.
@@ -100,10 +108,10 @@ foreach $id ( keys(%sequences) ) {
 					}
 				}
 
-				print STDERR $id,"\t",$newPos,"\t",uc($newInsert),"\n";
+				print TABL $id,"\t",$newPos,"\t",uc($newInsert),"\n";
 				substr($sequence,$codonStart,3) = $newCodon;
 			} else {
-				print STDERR $id,"\t",$pos,"\t",uc($insert),"\n";
+				print TABL $id,"\t",$pos,"\t",uc($insert),"\n";
 			}
 		}
 	}
@@ -125,4 +133,6 @@ foreach $id ( keys(%sequences) ) {
 	
 	print '>',$id,"\n",$sequence,"\n";
 }
-close(IN);
+if ( $outputTable ) {
+	close(TABL);
+}
