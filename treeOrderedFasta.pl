@@ -98,7 +98,7 @@ while($record = <SEQ> ) {
 		#} else {
 		#	$key = $header;
 		#}
-		if ( $header =~ /(.*?)_{.+}/ ) {
+		if ( $header =~ /(.*?)_\{.+\}/ ) {
 			$header = $1;
 		}
 
