@@ -3,6 +3,7 @@
 # Version 1.0
 # Codon corrects sequences.
 
+use File::Basename;
 use Getopt::Long;
 GetOptions(
 		'insertion-table|I=s' => \$insertionTable,
@@ -12,7 +13,7 @@ GetOptions(
 if ( -t STDIN && scalar(@ARGV) != 1 ) {
 	$message = "Usage:\n\tperl $0 <nts.fasta> [options]\n";
 	$message .= "\t\t--insertion-table|-I <STR>\tInsertion table for insertion corrections.\n";
-	$message .= "\t\t--output-table|-O <STR>\tOutput file for the insertion table.\n";
+	$message .= "\t\t--output-table|-O <STR>\t\tOutput file for the insertion table.\n";
 	die($message."\n");
 }
 
@@ -34,6 +35,8 @@ if ( $outputTable ) {
 	*TABL = *STDERR;
 }
 
+$PROG = basename($0,'.pl');
+$firstFile = $ARGV[0];
 # Process records.
 %codonStats = %sequences = ();
 @patterns = (); $/ = ">";
@@ -47,7 +50,7 @@ while ( $record = <> ) {
 	if ( $length == 0 ) {
 		next;
 	} elsif ( $length % 3 != 0 ) {
-		die("Not an alignment.\n");
+		die("$PROG:\tNot a codon alignment! See:\n\t$firstFile\n");
 	} else {
 		$sequences{$id} = $sequence;
 		$counts{$sequence}++;
@@ -57,9 +60,15 @@ while ( $record = <> ) {
 @patterns = keys(%counts);
 foreach $id ( keys(%sequences) ) {
 	$sequence = $sequences{$id};
+	$seqLimit = length($sequence) - 2;	# TO-DO: what about the second to last insertion opportunity?
 	if ( defined($inserts{$id}) ) {
 		# position is 1 based
 		foreach $pos ( keys(%{$inserts{$id}}) ) {
+			if ( $pos > $seqLimit ) {
+				# should be in frame if at length
+				if ( $pos == length($sequence) ) { print TABL $id,"\t",$pos,"\t",uc($insert),"\n"; }
+				next;
+			} 
 			$insert = $inserts{$id}{$pos};
 			$iDivis = length($insert) % 3;
 			$iFrame = $pos % 3;
@@ -133,6 +142,7 @@ foreach $id ( keys(%sequences) ) {
 	
 	print '>',$id,"\n",$sequence,"\n";
 }
+
 if ( $outputTable ) {
 	close(TABL);
 }

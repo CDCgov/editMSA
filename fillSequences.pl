@@ -4,8 +4,11 @@
 # Fill out 
 
 
+use Getopt::Long;
+GetOptions(  'fill-triplets|F' => \$fillTriplets );
+
 if ( scalar(@ARGV) != 2 ) {
-	$message = "Usage:\n\tperl $0 <nts.fasta> <ins.txt>\n";
+	$message = "Usage:\n\tperl $0 <fasta> <ins.txt> [-F|--fill-triplets]\n";
 	die($message."\n");
 }
 
@@ -36,6 +39,11 @@ while ( $record = <FASTA> ) {
 	$offset = 0;
 	foreach $pos ( sort { $a <=> $b } keys(%{$inserts{$id}}) ) {
 		$insert = $inserts{$id}{$pos};
+
+		if ( $fillTriplets && length($insert) % 3 != 0 ) {
+			next;
+		}
+
 		substr($sequence,$pos+$offset,0) = $insert;
 		$offset += length($insert);
 	}
