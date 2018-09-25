@@ -112,7 +112,7 @@ foreach $record ( @records ) {
 	if ( $addAnnot ) {
 		$tmp = $id;
 		if ( $ignoreFastaAnnot ) {
-			$tmp =~ s/_?\{.+?\}//;
+			$tmp =~ s/_?\{.+?}//;
 		}
 		if ( $newID = headerInDB(\%annotMap,\@annotIDs,uc($tmp)) ) {
 			$id = $id.'{'.$annotMap{uc($newID)}.'}';
@@ -126,17 +126,17 @@ foreach $record ( @records ) {
 
 	# Get rid of a previous annotation.
 	if ( $deletePrev ) {
-		$id =~ s/\{.+?\}.*?\{(.+?)\}/{$1}/;
+		$id =~ s/{.+?}.*?\{(.+?)}/{$1}/;
 	}
 
 	if ( $deleteSingle ) {
-		$id =~ s/_?\{.+?\}//;
+		$id =~ s/_?\{.+?}//;
 	}
 
 
 	# Confirm prediction if they exist.
 	if ( $confirm ) {
-		$id =~ s/\{PRED:(.+?)\}$/{$1}/;
+		$id =~ s/{PRED:(.+?)}$/{$1}/;
 	}
 
 	# Find and replace.
@@ -145,7 +145,7 @@ foreach $record ( @records ) {
 
 	# Always replace.
 	} elsif ( defined($replace ) ) {
-		if ( $id !~ s/\{([^{}]*)\}\s*$/{$replace}/ ) {
+		if ( $id !~ s/{([^{}]*)}\s*$/{$replace}/ ) {
 			$id .= "{$replace}";
 		}
 	}
@@ -165,7 +165,6 @@ foreach $record ( @records ) {
 			$count{$annot}++;
 		}
 
-
 		print ORD $id,"\t",$count{$annot},'_',$annot,"\n";
 		$id = $count{$annot}.'_'.$annot;
 	}
@@ -173,15 +172,15 @@ foreach $record ( @records ) {
 	# Check for prefix or suffix
 	if ( (defined($prefix) || defined($suffix)) && !$matchFiles ) {
 		if ( defined($prevInfix) ) {
-			$id =~ s/\{(.+?)\}\{/{$prefix$1$suffix}{/;
+			$id =~ s/{(.+?)}\{/{$prefix$1$suffix}{/;
 		} else {
-			$id =~ s/\{(.+?)\}/{$prefix$1$suffix}/;
+			$id =~ s/{(.+?)}/{$prefix$1$suffix}/;
 		}
 	}
 
 
 	if ( $matchFiles ) {
-		if ( $id =~ /\{(.+?)\}/ ) {
+		if ( $id =~ /{(.+?)}/ ) {
 			$match{$1} = 1;
 		}
 	} elsif ( $inPlace ) {
