@@ -39,6 +39,7 @@ GetOptions(
 		'match-files|M' => \$matchFiles,
 		'previous-infix|N' => \$prevInfix,
 		'prefix|P=s' => \$prefix,
+		'append-pipe-annot|p' => \$appendPipeAnnot,
 		'suffix|X=s' => \$suffix,
 		'last-field|L=s' => \$lastFieldDelim
 	  );
@@ -61,6 +62,7 @@ if ( (scalar(@ARGV) != 1 && !$matchFiles) || ($matchFiles && scalar(@ARGV) < 2) 
 	$message .= "\t\t--in-place|-I\t\t\tRevise files in-place (could be dangerous).\n";
 	$message .= "\t\t--join-to-end|-J <TEXT>\t\tJoin annotation to end of the header (similar to add but without a file).\n";
 	$message .= "\t\t--last-field|-L <delim>\t\tClips the last field of the header and turns it into an annotation. Uses the specified delimiter to determine fields.\n";
+	$message .= "\t\t--append-pipe-annot|-p\t\tAppends annotation as a header field with pipe delim.\n";
 
 	die($message);
 }
@@ -69,11 +71,8 @@ if ( defined($orderMode) ) {
 	open(ORD, '>', $orderMode ) or die("$0 ERROR: Cannot open $orderMode.\n");
 }
 
-if ( defined($lastFieldDelim) ) {
-	$lastField = 1;
-} else {
-	$lastField = 0;
-}
+$lastField = defined($lastFieldDelim) ? 1 : 0;
+$appendPipeAnnot = defined($appendPipeAnnot) ? 1 : 0;
 
 if ( $addAnnot ) {
 	open(ANNOT,'<', $addAnnot ) or die("$0 ERROR: Cannot open $addAnnot.\n");
@@ -114,8 +113,14 @@ foreach $record ( @records ) {
 		if ( $ignoreFastaAnnot ) {
 			$tmp =~ s/_?\{.+?}//;
 		}
-		if ( $newID = headerInDB(\%annotMap,\@annotIDs,uc($tmp)) ) {
-			$id = $id.'{'.$annotMap{uc($newID)}.'}';
+
+		($r,$newID) = headerInDB(\%annotMap,\@annotIDs,uc($tmp));
+		if ( $r ) {
+			if ( $appendPipeAnnot ) {
+				$id = $id.'|'.$annotMap{uc($newID)};
+			} else {
+				$id = $id.'{'.$annotMap{uc($newID)}.'}';
+			}
 		}
 	}
 	
@@ -216,15 +221,15 @@ sub headerInDB(\%\@$) {
 	my $id = '';
 
 	if ( exists($ids->{$header}) ) {
-		return $header;
+		return (1,$header);
 	}
 
 	if ( $fuzzyMatch ) {
 		foreach $id ( @{$keys} ) {
 			if ( $header =~ /\Q$id\E/ ) {
-				return $id;
+				return (1,$id);
 			}
 		}
 	}
-	return 0;
+	return (0,'');
 }
