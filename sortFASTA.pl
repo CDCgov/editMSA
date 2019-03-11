@@ -30,9 +30,10 @@ GetOptions(	'ignore-case|C' => \$ignoreCase,
 	);
 
 
-@fields = split(',', $fieldSet);
-$numberSelected = scalar(@fields);
+$numberSelected = 0;
 if ( defined($fieldSet) ) {
+	@fields = split(',', $fieldSet);
+	$numberSelected = scalar(@fields);
 	foreach $x (@fields ) {
 		if ( $x == 0 ) {
 			die("$0 ERROR: field must be specified.\n");
@@ -40,10 +41,7 @@ if ( defined($fieldSet) ) {
 			die("$0 ERROR: field must be a positive number.\n");
 		}
 	}
-}
-
-for($x = 0; $x < $numberSelected; $x++ ) {
-	$fields[$x]--;
+	for($x = 0; $x < $numberSelected; $x++ ) { $fields[$x]--; }
 }
 
 if ( !defined($delim) ) {
