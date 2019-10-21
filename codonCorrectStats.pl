@@ -54,7 +54,6 @@ if ( $insertionTable ) {
 	open(INS,'<',$insertionTable) or die("Cannot open $insertionTable for reading.\n");
 	@lines = <INS>; chomp(@lines);
 	foreach $line ( @lines ) {
-print STDERR $id,"\t",$pos,"\t",$insert,"\n";
 		($id,$pos,$insert) = split("\t",$line);
 		$inserts{$id}{$pos} = lc($insert);
 	}
