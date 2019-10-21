@@ -54,6 +54,7 @@ if ( $insertionTable ) {
 	open(INS,'<',$insertionTable) or die("Cannot open $insertionTable for reading.\n");
 	@lines = <INS>; chomp(@lines);
 	foreach $line ( @lines ) {
+print STDERR $id,"\t",$pos,"\t",$insert,"\n";
 		($id,$pos,$insert) = split("\t",$line);
 		$inserts{$id}{$pos} = lc($insert);
 	}
@@ -147,9 +148,10 @@ foreach $id ( keys(%sequences) ) {
 		foreach $pos ( keys(%{$inserts{$id}}) ) {
 			if ( $pos > $seqLimit ) {
 				# should be in frame if at length
-				if ( $pos == length($sequence) ) { print TABL $id,"\t",$pos,"\t",uc($insert),"\n"; }
+				if ( $pos == length($sequence) ) { print TABL $id,"\t",$pos,"\t",uc($inserts{$id}{$pos}),"\n"; }
 				next;
 			} 
+
 			$insert = $inserts{$id}{$pos};
 			$iDivis = length($insert) % 3;
 			$iFrame = $pos % 3;
@@ -198,7 +200,7 @@ foreach $id ( keys(%sequences) ) {
 				print TABL $id,"\t",$newPos,"\t",uc($newInsert),"\n";
 				substr($sequence,$codonStart,3) = $newCodon;
 			} else {
-				print TABL $id,"\t",$pos,"\t",uc($insert),"\n";
+				print TABL $id,"\t",$pos,"\t",uc($inserts{$id}{$pos}),"\n";
 			}
 		}
 	}
