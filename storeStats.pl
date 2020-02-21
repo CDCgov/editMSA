@@ -13,7 +13,7 @@ GetOptions(
 if ( -t STDIN && scalar(@ARGV) != 1 ) {
 	$message = "Usage:\n\tperl $0 <nts.fasta> [options]\n";
 	$message .= "\t\t--output|-O <file.sto>\tOutput file for storable object. Default: STDOUT\n";
-	$message .= "\t\t--delim|-D <CHAR>\tDelimiter for header fields.\n";
+	$message .= "\t\t--delim|-D <CHAR>\tDelimiter for header fields. Default delim is '|'.\n";
 	$message .= "\t\t--field|-F <STR>\tComma-delimited set of fields to use for group. Default: no group.\n";
 	die($message."\n");
 }
