@@ -32,7 +32,7 @@ if ( (defined($stripLower) && scalar(@ARGV) != 1) || (!defined($stripLower) && s
 open( IN, '<', $ARGV[0] ) or die("$0 ERROR: Cannot open $ARGV[0].\n");
 
 # PREPARE the strip deletion
-$strip = '$sequence =~ tr/'.$ARGV[1].'//d;';
+$strip = '$sequence =~ tr/\Q'.$ARGV[1].'\E//d;';
 
 # PROCESS fasta data
 $/ = ">";
