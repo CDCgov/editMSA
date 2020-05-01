@@ -32,7 +32,8 @@ if ( (defined($stripLower) && scalar(@ARGV) != 1) || (!defined($stripLower) && s
 open( IN, '<', $ARGV[0] ) or die("$0 ERROR: Cannot open $ARGV[0].\n");
 
 # PREPARE the strip deletion
-$strip = '$sequence =~ tr/\Q'.$ARGV[1].'\E//d;';
+$strip = quotemeta($ARGV[1]);					# save input
+$strip = '$sequence =~ tr/'.$strip.'//d;';		# create safe eval
 
 # PROCESS fasta data
 $/ = ">";
@@ -45,7 +46,10 @@ while($record = <IN> ) {
 		$header =~ s/[\s:]/_/g;
 		$header =~ tr/',//d;
 	}
+
 	$sequence = join('',@lines);
+	if ( length($sequence) == 0 ) { next; }
+
 	if ( $stripLower ) {
 		$sequence =~ tr/[a-z]//d;
 	} else {
