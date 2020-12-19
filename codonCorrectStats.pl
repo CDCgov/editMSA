@@ -111,7 +111,7 @@ sub compareLeftRightGE($$$$) {
 }
 
 sub comparePosLeftRightGE($$$$$) {
-	my ($posL,$posR,$group,$codon,$def) = (@_[0..3]);
+	my ($posL,$posR,$group,$codon,$def) = (@_[0..4]);
 	my ($x,$y) = (0,0);
 	if ( ! defined($group) || $group eq NIL || $group eq '' ) {
 		$x = defined($codonStats{$posL}{$codon}) ? $codonStats{$posL}{$codon} : 0;
