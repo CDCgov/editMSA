@@ -3,6 +3,7 @@
 # Version 1.0
 # Codon corrects sequences from user-supplied statistics.
 
+use warnings;
 use Storable;
 use File::Basename;
 use Getopt::Long;
@@ -82,8 +83,8 @@ my %defaultCodonStats = (
 
 # Obtain alignment-specific codon statistics if available
 my %codonStats = ();
-if ( defined($stats) ) {
-	%codonStats = %{retrieve($stats)} or die("Cannot open statistics file '$stats'.\n");
+if ( defined($statsFile) ) {
+	%codonStats = %{retrieve($statsFile)} or die("Cannot open statistics file '$statsFile'.\n");
 	$stats = 1;
 } else {
 	$stats = 0;
@@ -105,7 +106,26 @@ sub compareLeftRightGE($$$$) {
 		$x = defined($defaultCodonStats{$pos}{$left})  ? $defaultCodonStats{$pos}{$left} : 0;
 		$y = defined($defaultCodonStats{$pos}{$right}) ? $defaultCodonStats{$pos}{$right} : 0;
 	}
-	return ($x >= $y ? 1 : 0);
+
+	return $x >= $y;
+}
+
+sub comparePosLeftRightGE($$$$$) {
+	my ($posL,$posR,$group,$codon,$def) = (@_[0..3]);
+	my ($x,$y) = (0,0);
+	if ( ! defined($group) || $group eq NIL || $group eq '' ) {
+		$x = defined($codonStats{$posL}{$codon}) ? $codonStats{$posL}{$codon} : 0;
+		$y = defined($codonStats{$posR}{$codon}) ? $codonStats{$posR}{$codon} : 0;
+	} else {
+		$x = defined($codonStats{$group}{$posL}{$codon}) ? $codonStats{$group}{$posL}{$codon} : 0;
+		$y = defined($codonStats{$group}{$posR}{$codon}) ? $codonStats{$group}{$posR}{$codon} : 0;
+	}
+
+	if ( $x == $y && $x == 0 ) {
+		$x = $def eq 'L' ? 1 : 0; 
+		$y = $def eq 'L' ? 0 : 1; 
+	}
+	return $x >= $y;
 }
 
 $PROG = basename($0,'.pl');
@@ -142,6 +162,8 @@ while ( $record = <> ) {
 foreach $id ( keys(%sequences) ) {
 	$sequence = $sequences{$id};
 	$seqLimit = length($sequence) - 2;	# TO-DO: what about the second to last insertion opportunity?
+	$group = defined($groups{$id}) ? $groups{$id} : NIL;
+
 	if ( defined($inserts{$id}) ) {
 		# position is 1 based
 		foreach $pos ( keys(%{$inserts{$id}}) ) {
@@ -158,7 +180,6 @@ foreach $id ( keys(%sequences) ) {
 				# zero based codon number
 				$codonNumber = int( ($pos-1)/3 );
 				$codonStart = $codonNumber * 3;
-				$group = defined($groups{$id}) ? $groups{$id} : NIL;
 				
 				# A2 insertion
 				if ( $iFrame == 2 ) {
@@ -206,16 +227,38 @@ foreach $id ( keys(%sequences) ) {
 
 	# perform after insertion corrections
 	while ( $sequence =~ /([A-Za-z]{3})((---)+)([A-Za-z]{3})/g ) {
-		($left,$gaps,$gapT,$right) = ($1,$2,$3,$4);
+		($left,$gaps,$right) = ($1,$2,$4);
+		
 		$frame = $-[1]%3;
+
 		if ( $frame == 1 ) {
-		# RIGHT SHIFT
-			$replacement = substr($left,0,-1).$gaps.substr($left,-1);
-			substr($sequence,$-[1],length($replacement)) =  $replacement;
+			$pivotCodon = substr($left,-1).substr($right,0,2);
+			$leftCN =  int($-[2]/3);
+			$rightCN = int( ($+[2]-1) / 3 );
+
+			if ( comparePosLeftRightGE($leftCN, $rightCN, $group, $pivotCodon,'R') ) {
+				# LEFT SHIFT, move 2 to the left
+				$replacement = $left.substr($right,0,2).$gaps;
+				substr($sequence,$-[1],length($replacement)) =  $replacement;
+			} else {
+				# RIGHT SHIFT, move 1 to right
+				$replacement = substr($left,0,-1).$gaps.substr($left,-1);
+				substr($sequence,$-[1],length($replacement)) =  $replacement;
+			}
 		} elsif ( $frame == 2 ) {
-		# LEFT SHIFT
-			$replacement = $left.substr($right,0,1).$gaps;
-			substr($sequence,$-[1],length($replacement)) =  $replacement;
+			$pivotCodon = substr($left,-2).substr($right,0,1);
+			$leftCN =  int($-[2]/3);
+			$rightCN = int( ($+[2]-1) / 3 );
+		
+			if ( comparePosLeftRightGE($leftCN, $rightCN, $group, $pivotCodon, 'L') ) {
+				# LEFT SHIFT, move 1 to the left
+				$replacement = $left.substr($right,0,1).$gaps;
+				substr($sequence,$-[1],length($replacement)) =  $replacement;
+			} else {
+				# RIGHT SHIFT, move 2 to right
+				$replacement = substr($left,0,-2).$gaps.substr($left,-2);
+				substr($sequence,$-[1],length($replacement)) =  $replacement;
+			}
 		}
 	}
 	
