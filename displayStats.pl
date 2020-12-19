@@ -10,7 +10,7 @@ use Getopt::Long;
 
 my $verbose;
 GetOptions(
-		'verbose|S=s' => \$verbose
+		'verbose|V' => \$verbose
 	);
 
 if ( scalar(@ARGV) != 1 ) {
@@ -48,6 +48,7 @@ if ( defined($verbose) ) {
 	my @keys = keys(%codonStats);
 	if ( $keys[0] =~ /^\d+$/ ) {
 		@keys = sort { $a <=> $b } @keys;
+		print STDOUT "Number of Codons\tMaximum Codon Depth\n";
 		foreach my $p ( @keys ) {
 			foreach my $c ( sort { $codonStats{$p}{$b} <=> $codonStats{$p}{$a} } keys(%{$codonStats{$p}}) ) {
 				if ( $codonStats{$p}{$c} > $maxC ) {
@@ -57,6 +58,7 @@ if ( defined($verbose) ) {
 		}
 		print STDOUT $#keys,"\t",$maxC,"\n";
 	} else {
+		print STDOUT "Group\tNumber of Codons\tMaximum Codon Depth\n";
 		foreach my $g ( sort(@keys) ) {
 			my @positions = sort { $a <=> $b } keys(%{$codonStats{$g}});
 			$maxC = 0;
