@@ -81,6 +81,7 @@ if ( scalar(@groups) == 1 && $groups[0] eq '__NIL__' ) {
 			$codonNumber = int( $pos/3 );
 			$codonStart = $codonNumber * 3;
 			$codon = substr($pattern, $codonStart, 3);
+			if ( $codon =~ /[.nN-]/ ) { next; }
 			$codonData{$codonNumber}{$codon} += $count;
 		}
 
@@ -96,6 +97,7 @@ if ( scalar(@groups) == 1 && $groups[0] eq '__NIL__' ) {
 				$codonNumber = int( $pos/3 );
 				$codonStart = $codonNumber * 3;
 				$codon = substr($pattern, $codonStart, 3);
+				if ( $codon =~ /[.nN-]/ ) { next; }
 				$codonData{$group}{$codonNumber}{$codon} += $count;
 			}
 
@@ -103,14 +105,6 @@ if ( scalar(@groups) == 1 && $groups[0] eq '__NIL__' ) {
 	}
 
 }
-
-#$g = 'CALI07|HA';
-#foreach $p ( (0..3,545..548) ) {
-#	print STDERR $p,"\n";
-#	foreach $codon ( keys(%{$codonData{$g}{$p}}) ) {
-#		print STDERR $g,"\t",$p,"\t",$codon,"\t",$codonData{$g}{$p}{$codon},"\n";
-#	}
-#}
 
 if ( defined($outfile) ) {
 	store(\%codonData, $outfile) or die("Cannot write to '$outfile'.\n");
