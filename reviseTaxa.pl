@@ -25,65 +25,67 @@ use Getopt::Long;
 Getopt::Long::Configure('no_ignore_case');
 use File::Basename;
 GetOptions(
-		'find|F:s'=> \$find,
-		'in-place|I'=>\$inPlace,
-		'replace|R:s' => \$replace,
-		'join-to-end|J=s' => \$joinAnnot,
-		'confirm-prediction|C' => \$confirm,	
-		'delete-prev|D' => \$deletePrev,
-		'delete-single|S'=> \$deleteSingle,
-		'add-annot|A=s' => \$addAnnot,
-		'ignore-fasta-annot|G' => \$ignoreFastaAnnot,
-		'fuzzy-match|Z' => \$fuzzyMatch,
-		'order-mode|O:s' => \$orderMode,
-		'match-files|M' => \$matchFiles,
-		'previous-infix|N' => \$prevInfix,
-		'prefix|P=s' => \$prefix,
-		'append-pipe-annot|p' => \$appendPipeAnnot,
-		'suffix|X=s' => \$suffix,
-		'last-field|L=s' => \$lastFieldDelim
-	  );
+            'find|F:s'             => \$find,
+            'in-place|I'           => \$inPlace,
+            'replace|R:s'          => \$replace,
+            'join-to-end|J=s'      => \$joinAnnot,
+            'confirm-prediction|C' => \$confirm,
+            'delete-prev|D'        => \$deletePrev,
+            'delete-single|S'      => \$deleteSingle,
+            'add-annot|A=s'        => \$addAnnot,
+            'ignore-fasta-annot|G' => \$ignoreFastaAnnot,
+            'fuzzy-match|Z'        => \$fuzzyMatch,
+            'order-mode|O:s'       => \$orderMode,
+            'match-files|M'        => \$matchFiles,
+            'previous-infix|N'     => \$prevInfix,
+            'prefix|P=s'           => \$prefix,
+            'append-pipe-annot|p'  => \$appendPipeAnnot,
+            'suffix|X=s'           => \$suffix,
+            'last-field|L=s'       => \$lastFieldDelim
+);
 
-if ( (scalar(@ARGV) != 1 && !$matchFiles) || ($matchFiles && scalar(@ARGV) < 2) ) {
-	$message = "Usage:\n\tperl $0 <input.fasta> [OPTIONS] [-M <file1 file2 ...>]\n";
-	$message .= "\t\t--confirm-prediction|-C\t\tConfirm predicted annotations.\n";
-	$message .= "\t\t--delete-prev|-D\t\tDelete previous annotations where there are two.\n";
-	$message .= "\t\t--delete-single|-S\t\tDelete previous annotations where there is one, filters AFTER delete-prev.\n";
-	$message .= "\t\t--find|-F <TEXT>\t\tSelect sequences including this annotation.\n";
-	$message .= "\t\t--replace|-R <TEXT>\t\tReplace the annotation with TEXT.\n";
-	$message .= "\t\t--add-annot|-A <FILE>\t\tAdd annotations based on tab delimited file (ID\tANNOT).\n";
-	$message .= "\t\t--ignore-fasta-annot|-G <FILE>\tIgnores previous annotation on FASTA headers vs. annotation file.\n";
-	$message .= "\t\t--fuzzy-match|-Z\t\tSearches for IDs in FASTA (-A option), matching if header contains the ID.\n";
-	$message .= "\t\t--order-mode|-O <out.file>\tAnnotation with ordinals for truncated names.\n";
-	$message .= "\t\t--match-files|-M <file1 ...>\tOutput filenames containing annotation names in the input file.\n";
-	$message .= "\t\t--previous-infix|N\t\tSuffix and prefix only apply to a 'previous' or first of a doublet annotation.\n";
-	$message .= "\t\t--prefix|-P <TEXT>\t\tPrefix for matching filenames with annotations OR adds prefix to header.\n";
-	$message .= "\t\t--suffix|-X <TEXT>\t\tSuffix for matching filenames with annotations OR adds suffix to header.\n";
-	$message .= "\t\t--in-place|-I\t\t\tRevise files in-place (could be dangerous).\n";
-	$message .= "\t\t--join-to-end|-J <TEXT>\t\tJoin annotation to end of the header (similar to add but without a file).\n";
-	$message .= "\t\t--last-field|-L <delim>\t\tClips the last field of the header and turns it into an annotation. Uses the specified delimiter to determine fields.\n";
-	$message .= "\t\t--append-pipe-annot|-p\t\tAppends annotation as a header field with pipe delim.\n";
+if ( ( scalar(@ARGV) != 1 && !$matchFiles ) || ( $matchFiles && scalar(@ARGV) < 2 ) ) {
+    $message = "Usage:\n\tperl $0 <input.fasta> [OPTIONS] [-M <file1 file2 ...>]\n";
+    $message .= "\t\t--confirm-prediction|-C\t\tConfirm predicted annotations.\n";
+    $message .= "\t\t--delete-prev|-D\t\tDelete previous annotations where there are two.\n";
+    $message .= "\t\t--delete-single|-S\t\tDelete previous annotations where there is one, filters AFTER delete-prev.\n";
+    $message .= "\t\t--find|-F <TEXT>\t\tSelect sequences including this annotation.\n";
+    $message .= "\t\t--replace|-R <TEXT>\t\tReplace the annotation with TEXT.\n";
+    $message .= "\t\t--add-annot|-A <FILE>\t\tAdd annotations based on tab delimited file (ID\tANNOT).\n";
+    $message .= "\t\t--ignore-fasta-annot|-G <FILE>\tIgnores previous annotation on FASTA headers vs. annotation file.\n";
+    $message .= "\t\t--fuzzy-match|-Z\t\tSearches for IDs in FASTA (-A option), matching if header contains the ID.\n";
+    $message .= "\t\t--order-mode|-O <out.file>\tAnnotation with ordinals for truncated names.\n";
+    $message .= "\t\t--match-files|-M <file1 ...>\tOutput filenames containing annotation names in the input file.\n";
+    $message .= "\t\t--previous-infix|N\t\tSuffix and prefix only apply to a 'previous' or first of a doublet annotation.\n";
+    $message .= "\t\t--prefix|-P <TEXT>\t\tPrefix for matching filenames with annotations OR adds prefix to header.\n";
+    $message .= "\t\t--suffix|-X <TEXT>\t\tSuffix for matching filenames with annotations OR adds suffix to header.\n";
+    $message .= "\t\t--in-place|-I\t\t\tRevise files in-place (could be dangerous).\n";
+    $message .= "\t\t--join-to-end|-J <TEXT>\t\tJoin annotation to end of the header (similar to add but without a file).\n";
+    $message .=
+"\t\t--last-field|-L <delim>\t\tClips the last field of the header and turns it into an annotation. Uses the specified delimiter to determine fields.\n";
+    $message .= "\t\t--append-pipe-annot|-p\t\tAppends annotation as a header field with pipe delim.\n";
 
-	die($message);
+    die($message);
 }
 
 if ( defined($orderMode) ) {
-	open(ORD, '>', $orderMode ) or die("$0 ERROR: Cannot open $orderMode.\n");
+    open( ORD, '>', $orderMode ) or die("$0 ERROR: Cannot open $orderMode.\n");
 }
 
-$lastField = defined($lastFieldDelim) ? 1 : 0;
+$lastField       = defined($lastFieldDelim)  ? 1 : 0;
 $appendPipeAnnot = defined($appendPipeAnnot) ? 1 : 0;
 
-if ( $addAnnot ) {
-	open(ANNOT,'<', $addAnnot ) or die("$0 ERROR: Cannot open $addAnnot.\n");
-	%annotMap = (); $/ = "\n";
-	while( $line = <ANNOT> ) {
-		chomp($line);
-		($key, $value) = split(/\t/, $line);
-		$annotMap{uc($key)} = $value;
-	}
-	close(ANNOT);
-	@annotIDs = keys(%annotMap);
+if ($addAnnot) {
+    open( ANNOT, '<', $addAnnot ) or die("$0 ERROR: Cannot open $addAnnot.\n");
+    %annotMap = ();
+    $/        = "\n";
+    while ( $line = <ANNOT> ) {
+        chomp($line);
+        ( $key, $value ) = split( /\t/, $line );
+        $annotMap{ uc($key) } = $value;
+    }
+    close(ANNOT);
+    @annotIDs = keys(%annotMap);
 }
 
 $/ = ">";
@@ -92,144 +94,142 @@ open( IN, '<', $ARGV[0] ) or die("$0 ERROR: Cannot open $ARGV[0] for reading.\n"
 close(IN);
 %match = ();
 
-if ( $inPlace ) {
-	open( OUT, '>', $ARGV[0] ) or die("$0 ERROR: Cannot open $ARGV[0] for writing.\n");
+if ($inPlace) {
+    open( OUT, '>', $ARGV[0] ) or die("$0 ERROR: Cannot open $ARGV[0] for writing.\n");
 }
 
 # PROCESS stored fasta information
-foreach $record ( @records ) {
-	chomp($record);
-	@lines = split(/\r\n|\n|\r/, $record);
-	$id = shift(@lines);
-	$sequence = join('',@lines);
+foreach $record (@records) {
+    chomp($record);
+    @lines    = split( /\r\n|\n|\r/, $record );
+    $id       = shift(@lines);
+    $sequence = join( '', @lines );
 
-	if ( length($sequence) == 0 ) {
-		next;
-	}
+    if ( length($sequence) == 0 ) {
+        next;
+    }
 
-	# Add annotations from a file
-	if ( $addAnnot ) {
-		$tmp = $id;
-		if ( $ignoreFastaAnnot ) {
-			$tmp =~ s/_?\{.+?}//;
-		}
+    # Add annotations from a file
+    if ($addAnnot) {
+        $tmp = $id;
+        if ($ignoreFastaAnnot) {
+            $tmp =~ s/_?\{.+?}//;
+        }
 
-		($r,$newID) = headerInDB(\%annotMap,\@annotIDs,uc($tmp));
-		if ( $r ) {
-			if ( $appendPipeAnnot ) {
-				$id = $id.'|'.$annotMap{uc($newID)};
-			} else {
-				$id = $id.'{'.$annotMap{uc($newID)}.'}';
-			}
-		}
-	}
-	
-	# join to the end
-	if ( defined($joinAnnot) ) {
-		$id .= '{'.$joinAnnot.'}';
-	}
+        ( $r, $newID ) = headerInDB( \%annotMap, \@annotIDs, uc($tmp) );
+        if ($r) {
+            if ($appendPipeAnnot) {
+                $id = $id . '|' . $annotMap{ uc($newID) };
+            } else {
+                $id = $id . '{' . $annotMap{ uc($newID) } . '}';
+            }
+        }
+    }
 
-	# Get rid of a previous annotation.
-	if ( $deletePrev ) {
-		$id =~ s/{.+?}.*?\{(.+?)}/{$1}/;
-	}
+    # join to the end
+    if ( defined($joinAnnot) ) {
+        $id .= '{' . $joinAnnot . '}';
+    }
 
-	if ( $deleteSingle ) {
-		$id =~ s/_?\{.+?}//;
-	}
+    # Get rid of a previous annotation.
+    if ($deletePrev) {
+        $id =~ s/{.+?}.*?\{(.+?)}/{$1}/;
+    }
 
+    if ($deleteSingle) {
+        $id =~ s/_?\{.+?}//;
+    }
 
-	# Confirm prediction if they exist.
-	if ( $confirm ) {
-		$id =~ s/{PRED:(.+?)}$/{$1}/;
-	}
+    # Confirm prediction if they exist.
+    if ($confirm) {
+        $id =~ s/{PRED:(.+?)}$/{$1}/;
+    }
 
-	# Find and replace.
-	if ( defined($find) && defined($replace) ) {
-		$id =~ s/\Q{$find}\E/{$replace}/;
+    # Find and replace.
+    if ( defined($find) && defined($replace) ) {
+        $id =~ s/\Q{$find}\E/{$replace}/;
 
-	# Always replace.
-	} elsif ( defined($replace ) ) {
-		if ( $id !~ s/{([^{}]*)}\s*$/{$replace}/ ) {
-			$id .= "{$replace}";
-		}
-	}
+        # Always replace.
+    } elsif ( defined($replace) ) {
+        if ( $id !~ s/{([^{}]*)}\s*$/{$replace}/ ) {
+            $id .= "{$replace}";
+        }
+    }
 
-	if ( $lastField ) {
-		@fields = split(/\Q$lastFieldDelim\E/,$id);
-		$annot = pop(@fields);
-		$id = join($lastFieldDelim,@fields).'{'.$annot.'}';
-	}
-	
-	if ( $orderMode ) {
-		$id =~ /\{(.+?)\}/;
-		$annot = $1;
-		if ( !defined( $count{$annot} ) ) {
-			$count{$annot} = 1;
-		} else {
-			$count{$annot}++;
-		}
+    if ($lastField) {
+        @fields = split( /\Q$lastFieldDelim\E/, $id );
+        $annot  = pop(@fields);
+        $id     = join( $lastFieldDelim, @fields ) . '{' . $annot . '}';
+    }
 
-		print ORD $id,"\t",$count{$annot},'_',$annot,"\n";
-		$id = $count{$annot}.'_'.$annot;
-	}
+    if ($orderMode) {
+        $id =~ /\{(.+?)\}/;
+        $annot = $1;
+        if ( !defined( $count{$annot} ) ) {
+            $count{$annot} = 1;
+        } else {
+            $count{$annot}++;
+        }
 
-	# Check for prefix or suffix
-	if ( (defined($prefix) || defined($suffix)) && !$matchFiles ) {
-		if ( defined($prevInfix) ) {
-			$id =~ s/{(.+?)}\{/{$prefix$1$suffix}{/;
-		} else {
-			$id =~ s/{(.+?)}/{$prefix$1$suffix}/;
-		}
-	}
+        print ORD $id, "\t", $count{$annot}, '_', $annot, "\n";
+        $id = $count{$annot} . '_' . $annot;
+    }
 
+    # Check for prefix or suffix
+    if ( ( defined($prefix) || defined($suffix) ) && !$matchFiles ) {
+        if ( defined($prevInfix) ) {
+            $id =~ s/{(.+?)}\{/{$prefix$1$suffix}{/;
+        } else {
+            $id =~ s/{(.+?)}/{$prefix$1$suffix}/;
+        }
+    }
 
-	if ( $matchFiles ) {
-		if ( $id =~ /{(.+?)}/ ) {
-			$match{$1} = 1;
-		}
-	} elsif ( $inPlace ) {
-		print OUT '>',$id,"\n",$sequence,"\n";
-	} else {
-		print '>',$id,"\n",$sequence,"\n";
-	}
+    if ($matchFiles) {
+        if ( $id =~ /{(.+?)}/ ) {
+            $match{$1} = 1;
+        }
+    } elsif ($inPlace) {
+        print OUT '>', $id, "\n", $sequence, "\n";
+    } else {
+        print '>', $id, "\n", $sequence, "\n";
+    }
 }
 close(OUT);
 if ( defined($orderMode) ) {
-	close(ORD);
+    close(ORD);
 }
 
-if ( $matchFiles ) {
-	for($i = 1; $i < scalar(@ARGV); $i++ ) {
-		$filename = basename($ARGV[$i]);
-		
-		foreach $annot ( keys(%match) ) {
-			if ( $filename =~ /^$prefix$annot$suffix/i ) {
-				print $ARGV[$i]," ";
-				last;
-			}
-		}
-	}
+if ($matchFiles) {
+    for ( $i = 1; $i < scalar(@ARGV); $i++ ) {
+        $filename = basename( $ARGV[$i] );
+
+        foreach $annot ( keys(%match) ) {
+            if ( $filename =~ /^$prefix$annot$suffix/i ) {
+                print $ARGV[$i], " ";
+                last;
+            }
+        }
+    }
 }
 
 #
 # FNC - search for a header in the header hash database
 sub headerInDB(\%\@$) {
-	my $ids = $_[0];
-	my $keys = $_[1];
-	my $header = $_[2];
-	my $id = '';
+    my $ids    = $_[0];
+    my $keys   = $_[1];
+    my $header = $_[2];
+    my $id     = '';
 
-	if ( exists($ids->{$header}) ) {
-		return (1,$header);
-	}
+    if ( exists( $ids->{$header} ) ) {
+        return ( 1, $header );
+    }
 
-	if ( $fuzzyMatch ) {
-		foreach $id ( @{$keys} ) {
-			if ( $header =~ /\Q$id\E/ ) {
-				return (1,$id);
-			}
-		}
-	}
-	return (0,'');
+    if ($fuzzyMatch) {
+        foreach $id ( @{$keys} ) {
+            if ( $header =~ /\Q$id\E/ ) {
+                return ( 1, $id );
+            }
+        }
+    }
+    return ( 0, '' );
 }

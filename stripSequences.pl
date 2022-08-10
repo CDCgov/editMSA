@@ -24,44 +24,43 @@
 # PROCESS parameters
 use Getopt::Long;
 GetOptions( 'fix-header|F' => \$fixHeader, 'strip-lower|L' => \$stripLower );
-if ( (defined($stripLower) && scalar(@ARGV) != 1) || (!defined($stripLower) && scalar(@ARGV) != 2) ) {
-	die("Usage:\n\t$0 [-F] <file.fas> {-L|<quoted_characters_to_delete>}\n");
+if ( ( defined($stripLower) && scalar(@ARGV) != 1 ) || ( !defined($stripLower) && scalar(@ARGV) != 2 ) ) {
+    die("Usage:\n\t$0 [-F] <file.fas> {-L|<quoted_characters_to_delete>}\n");
 }
-
 
 open( IN, '<', $ARGV[0] ) or die("$0 ERROR: Cannot open $ARGV[0].\n");
 
 # PREPARE the strip deletion
-$strip = quotemeta($ARGV[1]);					# save input
-$strip = '$sequence =~ tr/'.$strip.'//d;';		# create safe eval
+$strip = quotemeta( $ARGV[1] );                   # save input
+$strip = '$sequence =~ tr/' . $strip . '//d;';    # create safe eval
 
 # PROCESS fasta data
 $/ = ">";
-while($record = <IN> ) {
-	chomp($record);
-	@lines = split(/\r\n|\n|\r/, $record);
-	$header = shift(@lines);
-	if ( $fixHeader ) {
-		$header =~ s/^\s*(.*?)\s*$/\1/;
-		$header =~ s/[\s:]/_/g;
-		$header =~ tr/',//d;
-	}
+while ( $record = <IN> ) {
+    chomp($record);
+    @lines  = split( /\r\n|\n|\r/, $record );
+    $header = shift(@lines);
+    if ($fixHeader) {
+        $header =~ s/^\s*(.*?)\s*$/\1/;
+        $header =~ s/[\s:]/_/g;
+        $header =~ tr/',//d;
+    }
 
-	$sequence = join('',@lines);
-	if ( length($sequence) == 0 ) { next; }
+    $sequence = join( '', @lines );
+    if ( length($sequence) == 0 ) { next; }
 
-	if ( $stripLower ) {
-		$sequence =~ tr/[a-z]//d;
-	} else {
-		eval($strip);
-	}
+    if ($stripLower) {
+        $sequence =~ tr/[a-z]//d;
+    } else {
+        eval($strip);
+    }
 
-	if ( length($sequence) == 0 ) {
-		next;
-	} else {
-		print '>',$header,"\n";
-		print $sequence,"\n";
-	}
+    if ( length($sequence) == 0 ) {
+        next;
+    } else {
+        print '>', $header, "\n";
+        print $sequence, "\n";
+    }
 }
 close(IN);
 ####################
