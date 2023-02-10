@@ -79,7 +79,10 @@ while ( my $fasta_record = <$IN> ) {
     if ($stripLower) {
         $sequence =~ tr/[a-z]//d;
     } elsif ($stripBadBases) {
-        $sequence =~ s/[^gcatrykmbvdhunGCATRYKMBVDHUN~.-]//gsmx;
+
+        # Only IUPAC codes allowed for bases.
+        # See: https://www.bioinformatics.org/sms/iupac.html
+        $sequence =~ s/[^gcatrykmbvdhunswGCATRYKMBVDHUNSW.-]//gsmx;
     } else {
         eval($strip) or croak("Error in eval: $strip\n");
 
