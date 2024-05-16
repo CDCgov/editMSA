@@ -1,72 +1,26 @@
 #!/usr/bin/env perl
 # Sam Shepard - 2016
 
-%gc = (
-    'TCA' => 'S',    # Serine
-    'TCC' => 'S',    # Serine
-    'TCG' => 'S',    # Serine
-    'TCT' => 'S',    # Serine
-    'TTC' => 'F',    # Phenylalanine
-    'TTT' => 'F',    # Phenylalanine
-    'TTA' => 'L',    # Leucine
-    'TTG' => 'L',    # Leucine
-    'TAC' => 'Y',    # Tyrosine
-    'TAT' => 'Y',    # Tyrosine
-    'TAA' => '*',    # Stop
-    'TAG' => '*',    # Stop
-    'TGC' => 'C',    # Cysteine
-    'TGT' => 'C',    # Cysteine
-    'TGA' => '*',    # Stop
-    'TGG' => 'W',    # Tryptophan
-    'CTA' => 'L',    # Leucine
-    'CTC' => 'L',    # Leucine
-    'CTG' => 'L',    # Leucine
-    'CTT' => 'L',    # Leucine
-    'CCA' => 'P',    # Proline
-    'CAT' => 'H',    # Histidine
-    'CAA' => 'Q',    # Glutamine
-    'CAG' => 'Q',    # Glutamine
-    'CGA' => 'R',    # Arginine
-    'CGC' => 'R',    # Arginine
-    'CGG' => 'R',    # Arginine
-    'CGT' => 'R',    # Arginine
-    'ATA' => 'I',    # Isoleucine
-    'ATC' => 'I',    # Isoleucine
-    'ATT' => 'I',    # Isoleucine
-    'ATG' => 'M',    # Methionine
-    'ACA' => 'T',    # Threonine
-    'ACC' => 'T',    # Threonine
-    'ACG' => 'T',    # Threonine
-    'ACT' => 'T',    # Threonine
-    'AAC' => 'N',    # Asparagine
-    'AAT' => 'N',    # Asparagine
-    'AAA' => 'K',    # Lysine
-    'AAG' => 'K',    # Lysine
-    'AGC' => 'S',    # Serine
-    'AGT' => 'S',    # Serine
-    'AGA' => 'R',    # Arginine
-    'AGG' => 'R',    # Arginine
-    'CCC' => 'P',    # Proline
-    'CCG' => 'P',    # Proline
-    'CCT' => 'P',    # Proline
-    'CAC' => 'H',    # Histidine
-    'GTA' => 'V',    # Valine
-    'GTC' => 'V',    # Valine
-    'GTG' => 'V',    # Valine
-    'GTT' => 'V',    # Valine
-    'GCA' => 'A',    # Alanine
-    'GCC' => 'A',    # Alanine
-    'GCG' => 'A',    # Alanine
-    'GCT' => 'A',    # Alanine
-    'GAC' => 'D',    # Aspartic Acid
-    'GAT' => 'D',    # Aspartic Acid
-    'GAA' => 'E',    # Glutamic Acid
-    'GAG' => 'E',    # Glutamic Acid
-    'GGA' => 'G',    # Glycine
-    'GGC' => 'G',    # Glycine
-    'GGG' => 'G',    # Glycine
-    'GGT' => 'G'     # Glycine
+#<<< augmented translation table
+my %gc = (
+	'TAA'=>'*','TAG'=>'*','TAR'=>'*','TGA'=>'*','TRA'=>'*','GCA'=>'A','GCB'=>'A','GCC'=>'A','GCD'=>'A','GCG'=>'A','GCH'=>'A',
+	'GCK'=>'A','GCM'=>'A','GCN'=>'A','GCR'=>'A','GCS'=>'A','GCT'=>'A','GCV'=>'A','GCW'=>'A','GCY'=>'A','TGC'=>'C','TGT'=>'C',
+	'TGY'=>'C','GAC'=>'D','GAT'=>'D','GAY'=>'D','GAA'=>'E','GAG'=>'E','GAR'=>'E','TTC'=>'F','TTT'=>'F','TTY'=>'F','GGA'=>'G',
+	'GGB'=>'G','GGC'=>'G','GGD'=>'G','GGG'=>'G','GGH'=>'G','GGK'=>'G','GGM'=>'G','GGN'=>'G','GGR'=>'G','GGS'=>'G','GGT'=>'G',
+	'GGV'=>'G','GGW'=>'G','GGY'=>'G','CAC'=>'H','CAT'=>'H','CAY'=>'H','ATA'=>'I','ATC'=>'I','ATH'=>'I','ATM'=>'I','ATT'=>'I',
+	'ATW'=>'I','ATY'=>'I','AAA'=>'K','AAG'=>'K','AAR'=>'K','CTA'=>'L','CTB'=>'L','CTC'=>'L','CTD'=>'L','CTG'=>'L','CTH'=>'L',
+	'CTK'=>'L','CTM'=>'L','CTN'=>'L','CTR'=>'L','CTS'=>'L','CTT'=>'L','CTV'=>'L','CTW'=>'L','CTY'=>'L','TTA'=>'L','TTG'=>'L',
+	'TTR'=>'L','YTA'=>'L','YTG'=>'L','YTR'=>'L','ATG'=>'M','AAC'=>'N','AAT'=>'N','AAY'=>'N','CCA'=>'P','CCB'=>'P','CCC'=>'P',
+	'CCD'=>'P','CCG'=>'P','CCH'=>'P','CCK'=>'P','CCM'=>'P','CCN'=>'P','CCR'=>'P','CCS'=>'P','CCT'=>'P','CCV'=>'P','CCW'=>'P',
+	'CCY'=>'P','CAA'=>'Q','CAG'=>'Q','CAR'=>'Q','AGA'=>'R','AGG'=>'R','AGR'=>'R','CGA'=>'R','CGB'=>'R','CGC'=>'R','CGD'=>'R',
+	'CGG'=>'R','CGH'=>'R','CGK'=>'R','CGM'=>'R','CGN'=>'R','CGR'=>'R','CGS'=>'R','CGT'=>'R','CGV'=>'R','CGW'=>'R','CGY'=>'R',
+	'MGA'=>'R','MGG'=>'R','MGR'=>'R','AGC'=>'S','AGT'=>'S','AGY'=>'S','TCA'=>'S','TCB'=>'S','TCC'=>'S','TCD'=>'S','TCG'=>'S',
+	'TCH'=>'S','TCK'=>'S','TCM'=>'S','TCN'=>'S','TCR'=>'S','TCS'=>'S','TCT'=>'S','TCV'=>'S','TCW'=>'S','TCY'=>'S','ACA'=>'T',
+	'ACB'=>'T','ACC'=>'T','ACD'=>'T','ACG'=>'T','ACH'=>'T','ACK'=>'T','ACM'=>'T','ACN'=>'T','ACR'=>'T','ACS'=>'T','ACT'=>'T',
+	'ACV'=>'T','ACW'=>'T','ACY'=>'T','GTA'=>'V','GTB'=>'V','GTC'=>'V','GTD'=>'V','GTG'=>'V','GTH'=>'V','GTK'=>'V','GTM'=>'V',
+	'GTN'=>'V','GTR'=>'V','GTS'=>'V','GTT'=>'V','GTV'=>'V','GTW'=>'V','GTY'=>'V','TGG'=>'W','TAC'=>'Y','TAT'=>'Y','TAY'=>'Y'
 );
+#>>>
 
 use File::Basename;
 use Getopt::Long;
