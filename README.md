@@ -1,5 +1,7 @@
 **As a first step, this document is under governance review. When the review completes as appropriate per local and agency processes, the project team will be allowed to remove this notice. This material is draft.**
 
+POC: Sam Shepard (vfn4@cdc.gov), CDC/DDID/NCIRD/ID/OD
+
 # Edit MSA
 
 A collection of scripts for editing multiple sequence alignments, usually in [FASTA](https://en.wikipedia.org/wiki/FASTA_format) format. Some functionality may exist for downstream processes and may not be generally useful.
