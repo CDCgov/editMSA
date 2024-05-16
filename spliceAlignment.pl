@@ -1,5 +1,8 @@
 #!/usr/bin/env perl
-# Sam Shepard - 2016
+# Splices alignments back together.
+#
+# Samuel S. Shepard (vfn4@cdc.gov)
+# 2016, Centers for Disease Control & Prevention
 
 #<<< augmented translation table
 my %gc = (

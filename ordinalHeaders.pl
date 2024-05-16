@@ -1,5 +1,8 @@
 #!/usr/bin/env perl
-# Sam Shepard - 8.2015
+# Rewrite FASTA headers to increasing ordinals: S1, S2, S3..
+#
+# Samuel S. Shepard (vfn4@cdc.gov)
+# 2015, Centers for Disease Control & Prevention
 
 use Getopt::Long;
 GetOptions(

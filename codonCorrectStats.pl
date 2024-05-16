@@ -1,7 +1,9 @@
 #!/usr/bin/env perl
-# Samuel Shepard - 2019.03.11
-# Version 1.0
 # Codon corrects sequences from user-supplied statistics.
+
+# Version 1.0
+# Samuel S. Shepard (vfn4@cdc.gov)
+# 2019, Centers for Disease Control & Prevention
 
 use warnings;
 use Storable;

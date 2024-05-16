@@ -1,7 +1,8 @@
 #!/usr/bin/env perl
-# Samuel Shepard - 4.18.2016
-# Version 1.0
-# Fill out
+# Fills insertions back into the FASTA.
+#
+# Samuel S. Shepard (vfn4@cdc.gov)
+# 2016, Centers for Disease Control & Prevention
 
 use Getopt::Long;
 GetOptions( 'fill-triplets|F' => \$fillTriplets );

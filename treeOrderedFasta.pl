@@ -1,6 +1,8 @@
 #!/usr/bin/env perl
-# Sam Shepard - treeOrderedFasta.pl - 5.2011
 # Gets a fasta file and orders by tree order.
+#
+# Samuel S. Shepard (vfn4@cdc.gov)
+# 2011, Centers for Disease Control & Prevention
 #
 # Version 1.0.3
 # 1.0.3 + Improved capatibility with MEGA4's header mutilations.

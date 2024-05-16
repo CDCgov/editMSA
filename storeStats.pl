@@ -1,7 +1,8 @@
 #!/usr/bin/env perl
-# Filename:         storeStats.pl
-# Description:      Computes & stores the codon weight matrix from an MPSA.
-# Author:           Samuel S. Shepard, Centers for Disease Control and Prevention
+# Computes & stores the codon weight matrix from an MPSA.
+#
+# Samuel S. Shepard (vfn4@cdc.gov)
+# 2022, Centers for Disease Control & Prevention
 
 use strict;
 use warnings;

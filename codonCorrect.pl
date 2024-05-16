@@ -1,7 +1,8 @@
 #!/usr/bin/env perl
-# Samuel Shepard - 4.18.2016
-# Version 1.0
-# Codon corrects sequences.
+# Codon corrects sequences using calculated statistics.
+#
+# Samuel S. Shepard (vfn4@cdc.gov)
+# 2019, Centers for Disease Control & Preventio
 
 use File::Basename;
 use Getopt::Long;
