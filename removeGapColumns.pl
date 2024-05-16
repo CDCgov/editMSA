@@ -3,24 +3,8 @@
 # Removes gap columns (100% gaps) from FASTA alignments.
 # Warning, this program overwrites the source file.
 #
-# Copyright (C) 2012, Centers for Disease Control & Prevention
-# Author: Samuel S. Shepard (vfn4@cdc.gov)
-#
-# GPL version 3
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-####################
+# Samuel S. Shepard (vfn4@cdc.gov)
+# 2012, Centers for Disease Control & Prevention
 
 use Getopt::Long;
 GetOptions(
