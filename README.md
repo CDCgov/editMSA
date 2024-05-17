@@ -25,7 +25,7 @@ POC: Sam Shepard (<vfn4@cdc.gov>), CDC/NCIRD/ID/OD
 
 ## Usage
 
-For up-to-date usages, run the `perl <script.pl>` with no arguments. Example usage for each script:
+For up-to-date usages, run `perl <script.pl>` with no arguments. Example usage for each script:
 
 ```bash
 # codonCorrect.pl
@@ -65,12 +65,14 @@ Usage:
 # ordinalHeaders.pl
 Usage:
         perl ordinalHeaders.pl <input.fasta> [-A] [-H] [-N <STR>] [-O <STR>]
+        
 # removeGapColumns.pl
 Usage:
         perl removeGapColumns.pl <file.fasta> [options]
                 -D|-display-k-tons      Displays sequences where for columns with 0 < bases <= K.
                 -T|-tab-formatted       Print out tab-delimited data.
                 -S|-show-column-support Show column support.
+
 # reviseTaxa.pl
 Usage:
         perl reviseTaxa.pl <input.fasta> [OPTIONS] [-M <file1 file2 ...>]
@@ -91,6 +93,7 @@ Usage:
                 --join-to-end|-J <TEXT>         Join annotation to end of the header (similar to add but without a file).
                 --last-field|-L <delim>         Clips the last field of the header and turns it into an annotation. Uses the specified delimiter to determine fields.
                 --append-pipe-annot|-p          Appends annotation as a header field with pipe delim.
+
 # shiftAlignment.pl
 Usage:
         perl shiftAlignment.pl <in.fasta> <...>
@@ -103,6 +106,7 @@ Usage:
         perl sortFASTA.pl [FASTA ...] [OPTIONS]
                 -C|--case-sensitive     Ignore case.
         <STDIN> read if no FASTA given.
+
 # spliceAlignment.pl
 Usage:
         perl spliceAlignment.pl <diced> <miniNT> [options]
