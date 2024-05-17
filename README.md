@@ -2,7 +2,7 @@
 
 A collection of scripts for editing multiple sequence alignments, usually in [FASTA](https://en.wikipedia.org/wiki/FASTA_format) format. Some functionality may exist for downstream processes and may not be generally useful.
 
-POC: Sam Shepard (<vfn4@cdc.gov>), CDC/NCIRD/ID/OD
+For direct correspondence, feel free to contact: Samuel S. Shepard ([vfn4@cdc.gov](mailto:%22Samuel%20Shepard%22%3cvfn4@cdc.gov>?subject=EditMSA)), Centers for Disease Control and Prevention
 
 ## Overview
 
@@ -65,7 +65,7 @@ Usage:
 # ordinalHeaders.pl
 Usage:
         perl ordinalHeaders.pl <input.fasta> [-A] [-H] [-N <STR>] [-O <STR>]
-        
+
 # removeGapColumns.pl
 Usage:
         perl removeGapColumns.pl <file.fasta> [options]
