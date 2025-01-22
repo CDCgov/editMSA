@@ -8,10 +8,12 @@ use strict;
 use warnings;
 use Storable;
 use Getopt::Long;
+use File::Basename;
 use English qw( -no_match_vars);
 
 my $verbose;
-GetOptions( 'verbose|V' => \$verbose );
+my $tomlFormat;
+GetOptions( 'verbose|V' => \$verbose, 'toml-format|T' => \$tomlFormat );
 
 if ( scalar(@ARGV) != 1 ) {
     die( "Usage:\n\tperl $PROGRAM_NAME <STATS.sto> [options]\n" . "\t\t--verbose|V\tMake display verbose.\n\n" );
@@ -21,7 +23,28 @@ if ( scalar(@ARGV) != 1 ) {
 my $stats      = $ARGV[0];
 my %codonStats = %{ retrieve($stats) } or die("Cannot open statistics file '$stats'.\n");
 
-if ( defined($verbose) ) {
+if ( defined $tomlFormat ) {
+    my @keys = keys(%codonStats);
+    print STDOUT 'module = "', basename( $stats, '.sto' ) . '"', "\n";
+    if ( $keys[0] !~ /^\d+$/smx ) {
+        print STDOUT "\n[[product]]\n";
+
+        foreach my $g ( sort(@keys) ) {
+            my ( $ref_id, $protein ) = split( '\|', $g );
+            print STDOUT 'ref_id = "',              $ref_id,  "\"\n";
+            print STDOUT 'protein = "',             $protein, "\"\n";
+            print STDOUT 'codon_count_table = """', "\n";
+            foreach my $p ( sort { $a <=> $b } keys( %{ $codonStats{$g} } ) ) {
+                foreach
+                  my $c ( sort { $codonStats{$g}{$p}{$b} <=> $codonStats{$g}{$p}{$a} } keys( %{ $codonStats{$g}{$p} } ) ) {
+                    print STDOUT ( $p + 1 ), q{ }, $c, q{ }, $codonStats{$g}{$p}{$c}, "\n";
+                }
+            }
+            print STDOUT '"""', "\n";
+        }
+    }
+
+} elsif ( defined $verbose ) {
     my @keys = keys(%codonStats);
     if ( $keys[0] =~ /^\d+$/smx ) {
         foreach my $p ( sort { $a <=> $b } @keys ) {
