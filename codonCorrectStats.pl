@@ -28,6 +28,7 @@ if ( -t STDIN && scalar(@ARGV) != 1 ) {
     die( $message . "\n" );
 }
 
+# Validate --field argument, and convert from 1-based to 0-based
 $numberSelected = 0;
 if ( defined($fieldSet) ) {
     @fields         = split( ',', $fieldSet );
@@ -42,6 +43,8 @@ if ( defined($fieldSet) ) {
     for ( $x = 0; $x < $numberSelected; $x++ ) { $fields[$x]--; }
 }
 
+# Validate --delim argument, the delimiter used to separate the fields in the
+# header
 if ( !defined($delim) ) {
     $delim = '|';
 } elsif ( $delim eq '' ) {
@@ -50,6 +53,7 @@ if ( !defined($delim) ) {
     die("$0 ERROR: single character delimiter expected instead of '$delim'.\n");
 }
 
+# Load insertions from table into hashmap, first by ID and then by position
 my %inserts = ();
 if ($insertionTable) {
     $/ = "\n";
@@ -132,6 +136,8 @@ sub comparePosLeftRightGE($$$$$) {
     return $x >= $y;
 }
 
+# Parse and deduplicate sequences into hashmap, and extract relevant fields from
+# header into groups
 $PROG      = basename( $0, '.pl' );
 $firstFile = $ARGV[0];
 $group     = '';
@@ -166,19 +172,23 @@ while ( $record = <> ) {
     }
 }
 
+# Correct then output each sequence 
 foreach $id ( keys(%sequences) ) {
     $sequence = $sequences{$id};
     $seqLimit = length($sequence) - 2;                          # TO-DO: what about the second to last insertion opportunity?
     $group    = defined( $groups{$id} ) ? $groups{$id} : NIL;
 
+    # Fix frame for insertions. Insertions appear in the --insertion-table file,
+    # and are not in the original sequence. Correction will alter the sequence
+    # though
     if ( defined( $inserts{$id} ) ) {
 
         # position is 1 based
         foreach $pos ( keys( %{ $inserts{$id} } ) ) {
+            # Shifting the insertion will cause indexing out of bounds, so do
+            # not shift
             if ( $pos > $seqLimit ) {
-
-                # should be in frame if at length
-                if ( $pos == length($sequence) ) { print TABL $id, "\t", $pos, "\t", uc( $inserts{$id}{$pos} ), "\n"; }
+                print TABL $id, "\t", $pos, "\t", uc( $inserts{$id}{$pos} ), "\n";
                 next;
             }
 
