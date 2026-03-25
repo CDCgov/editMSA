@@ -111,8 +111,8 @@ sub compareLeftRightGE($$$$) {
     }
 
     if ( $x == $y && $x == 0 ) {
-        $x = defined( $defaultCodonStats{$pos}{$left} )  ? $defaultCodonStats{$pos}{$left}  : 0;
-        $y = defined( $defaultCodonStats{$pos}{$right} ) ? $defaultCodonStats{$pos}{$right} : 0;
+        $x = defined( $defaultCodonStats{$left} )  ? $defaultCodonStats{$left}  : 0;
+        $y = defined( $defaultCodonStats{$right} ) ? $defaultCodonStats{$right} : 0;
     }
 
     return $x >= $y;
