@@ -241,8 +241,15 @@ foreach $id ( keys(%sequences) ) {
                     }
                 }
 
-                print TABL $id, "\t", $newPos, "\t", uc($newInsert), "\n";
+                # Correct the aligned sequence based on the insertion movement
                 substr( $sequence, $codonStart, 3 ) = $newCodon;
+
+                # If the insertion moved before the first position of the exon,
+                # then drop it from the product. Otherwise, output the
+                # insertion.
+                if ( $newPos > 0 ) {
+                    print TABL $id, "\t", $newPos, "\t", uc($newInsert), "\n";
+                }  
             } else {
                 print TABL $id, "\t", $pos, "\t", uc( $inserts{$id}{$pos} ), "\n";
             }
